@@ -3,9 +3,21 @@
 
 namespace App\Http\Controllers;
 use App\Services\BoldApiService;
+use Illuminate\Http\Request;
+
 
 class ApiController extends Controller
 {
+    public function home(Request $request) {
+        $data = ['success?' => 'yeah'];
+        $data['params'] = $request->all();
+        if ($request->has('code')) {
+            $data['code'] = $request->get('code');
+        }
+        return response()->json($data);
+    }
+
+
     public function index() {
         /** @var BoldApiService $boldApiService */
         $boldApiService = app(BoldApiService::class);
