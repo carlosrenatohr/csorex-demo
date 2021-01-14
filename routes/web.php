@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+Route::prefix('/')->group(function() {
+    Route::get('/initialData', [Controllers\ApiController::class, 'index']);
+    Route::get('/subscriptions', [Controllers\ApiController::class, 'subscriptions']);
+    Route::get('/discounts', [Controllers\ApiController::class, 'discounts']);
 });
+

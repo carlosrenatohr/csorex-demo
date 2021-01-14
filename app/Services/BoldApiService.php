@@ -111,4 +111,42 @@ class BoldApiService {
 
         return $result;
     }
+
+    /**
+     * Get subscriptions for the given Shopify customer id
+     * @param $shopifyDomain
+     * @param int $since_id = 0
+     * @return bool|mixed
+     */
+    public function getSubscriptions($shopifyDomain, $since_id = 0)
+    {
+        try {
+            $res = $this->client->get('subscriptions?shop='.$shopifyDomain.'&since_id='.$since_id);
+            $result = json_decode($res->getBody(), true);
+        }
+        catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get discounts for the given Shopify customer id
+     * @param $shopifyDomain
+     * @param int $since_id
+     * @param int $limit
+     */
+    public function getDiscounts($shopifyDomain, $since_id = 0, $limit = 50)
+    {
+        try {
+            $res = $this->client->get("discounts?shop={$shopifyDomain}&since_id={$since_id}&limit={$limit}");
+            $result = json_decode($res->getBody(), true);
+        }
+        catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
 }
