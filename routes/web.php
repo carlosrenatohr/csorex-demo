@@ -18,6 +18,9 @@ use \App\Http\Controllers;
 //    return view('welcome');
 //});
 Route::prefix('/')->group(function() {
+    Route::get('/', function() {
+        return response()->json(['success' => 'yeah']);
+    });
     Route::get('/initialData', [Controllers\ApiController::class, 'index']);
     Route::get('/subscriptions', [Controllers\ApiController::class, 'subscriptions']);
     Route::get('/discounts', [Controllers\ApiController::class, 'discounts']);
