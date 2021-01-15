@@ -20,8 +20,19 @@ class WebhooksController extends Controller
         $equals = hash_equals($data['headers']['X-Bold-Signature'], $signature);
         $data['match'] = $equals;
         Log::error("Webhook Received>>" . $payload);
-        // todo add secure lines
+        // todo add secure lines & DB store instead logs
         // https://docs.boldapps.net/subscriptions/integration/index.html#securing-webhooks
-//        return response()->json($data);
+    }
+
+    public function subscriptionCreated(Request $request) {
+        $payload = $request->getContent();
+        $now = time(); // current unix timestamp
+        $json = json_encode($payload, JSON_FORCE_OBJECT);
+        $signature = hash_hmac('sha256', $now.'.'.$json, $this->signingKey);
+        $data['headers']['X-Bold-Signature'] = $request->header('X-Bold-Signature');
+        $data['headers']['timestamp'] = $request->header('timestamp');
+        $equals = hash_equals($data['headers']['X-Bold-Signature'], $signature);
+        $data['match'] = $equals;
+        Log::error("Subscription Received>>" . $payload);
     }
 }

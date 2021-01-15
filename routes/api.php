@@ -20,4 +20,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::prefix('webhooks')->group(function() {
     Route::post('orderCreated', [\App\Http\Controllers\WebhooksController::class, 'orderCreated']);
+    Route::post('subscriptionCreated', [\App\Http\Controllers\WebhooksController::class, 'subscriptionCreated']);
+
 });
