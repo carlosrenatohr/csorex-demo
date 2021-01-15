@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 use App\Services\BoldApiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class ApiController extends Controller
@@ -14,6 +15,7 @@ class ApiController extends Controller
         if ($request->has('code')) {
             $data['code'] = $request->get('code');
         }
+        Log::error('Access BOLD API');
         return response()->json($data);
     }
 
