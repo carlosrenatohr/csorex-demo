@@ -16,9 +16,11 @@ class BoldApiService {
     protected $client;
     protected $requestHandler;
     protected $responseHandler;
+    protected $shopifyDomain;
 
     public function __construct()
     {
+        $this->shopifyDomain = env('MYSHOPIFY_DOMAIN');
         $this->requestHandler = new BoldApiRequestHandler(env('BOLD_API_PRIVATE_KEY'), env('BOLD_API_HANDLE'), env('MYSHOPIFY_DOMAIN'));
         $this->responseHandler = new BoldApiResponseHandler($this->requestHandler);
 
@@ -41,36 +43,6 @@ class BoldApiService {
                 'content-type' => 'application/json',
             ],
         ]);
-    }
-
-    /**
-     * Update next order date for a customer's subscription
-     *
-     * @param $shopifyCustomerId
-     * @param $subscriptionId
-     * @param $nextOrderDate
-     * @return bool|mixed
-     */
-    public function updateNextOrderDate($shopifyCustomerId, $subscriptionId, $nextOrderDate)
-    {
-        /**
-         * Make the request to the API
-         * Note: Adding the authorization header and shop query param is handled in BoldApiRequestHandler
-         */
-        try {
-            $res = $this->client->put('manage/subscription/orders/'.$subscriptionId.'/next_ship_date?customer_id='.$shopifyCustomerId, [
-                'json' => [
-                    'next_shipping_date' => $nextOrderDate,
-                ]
-            ]);
-
-            $result = json_decode($res->getBody(), true);
-        }
-        catch (ClientException $e) {
-            return ['status' => $e->getResponse()->getStatusCode()];
-        }
-
-        return $result;
     }
 
     /**
@@ -132,15 +104,111 @@ class BoldApiService {
     }
 
     /**
-     * Get discounts for the given Shopify customer id
-     * @param $shopifyDomain
-     * @param int $since_id
-     * @param int $limit
+     * Get the Upcoming Orders for a given Subscription
+     * @param $shopify_customer_id
+     * @param int $order_id
+     * @return bool|mixed
      */
-    public function getDiscounts($shopifyDomain, $since_id = 0, $limit = 50)
+    public function getUpcomingOrders($shopify_customer_id, $order_id) {
+        try {
+            $res = $this->client->get("manage/subscription/orders/{$order_id}/upcoming?customer_id={$shopify_customer_id}&shop={$this->shopifyDomain}");
+            $result = json_decode($res->getBody(), true);
+        } catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Shipping Rates for a given Subscription Order
+     * @param $shopify_customer_id
+     * @param int $order_id
+     * @return bool|mixed
+     */
+    public function getShippingRates($shopify_customer_id, $order_id) {
+        try {
+            $res = $this->client->get("manage/subscription/orders/{$order_id}/shipping_rates?customer_id={$shopify_customer_id}&shop={$this->shopifyDomain}");
+            $result = json_decode($res->getBody(), true);
+        } catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Update next order date for a customer's subscription
+     *
+     * @param $shopifyCustomerId
+     * @param $subscriptionId
+     * @param $nextOrderDate
+     * @return bool|mixed
+     */
+    public function updateNextOrderDate($shopifyCustomerId, $subscriptionId, $nextOrderDate)
     {
         try {
-            $res = $this->client->get("discounts?shop={$shopifyDomain}&since_id={$since_id}&limit={$limit}");
+            $res = $this->client->put('manage/subscription/orders/'.$subscriptionId.'/next_ship_date?customer_id='.$shopifyCustomerId.'&shop='. $this->shopifyDomain, [
+                'json' => [
+                    'next_shipping_date' => $nextOrderDate,
+                ]
+            ]);
+
+            $result = json_decode($res->getBody(), true);
+        }
+        catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Update order interval for a customer's subscription
+     *
+     * @param $shopifyCustomerId
+     * @param $subscriptionId
+     * @param $frequency_type
+     * @param $frequency_num
+     * @return bool|mixed
+     */
+    public function updateOrderInterval($shopifyCustomerId, $subscriptionId, $frequency_type, $frequency_num)
+    {
+        try {
+            $res = $this->client->put('manage/subscription/orders/'.$subscriptionId.'/interval?customer_id='.$shopifyCustomerId.'&shop='. $this->shopifyDomain, [
+                'json' => [
+                    'frequency_type' => $frequency_type, // 1-Day; 2-Week;3-Month;5-Year
+                    'frequency_num' => $frequency_num,
+                ]
+            ]);
+
+            $result = json_decode($res->getBody(), true);
+        }
+        catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Update order interval for a customer's subscription
+     *
+     * @param $shopifyCustomerId
+     * @param $subscriptionId
+     * @param $frequency_type
+     * @param $frequency_num
+     * @return bool|mixed
+     */
+    public function updateShippingMethod($shopifyCustomerId, $subscriptionId, $shipping_rate)
+    {
+        try {
+            $res = $this->client->put('manage/subscription/orders/'. $subscriptionId.'/shipping_method?customer_id='.$shopifyCustomerId.'&shop='. $this->shopifyDomain, [
+                'json' => [
+                    'order_shipping_rate' => $shipping_rate,
+                ]
+            ]);
+
             $result = json_decode($res->getBody(), true);
         }
         catch (ClientException $e) {
