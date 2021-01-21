@@ -34,7 +34,17 @@ class ApiController extends Controller
         ]);
     }
 
-    public function orders() {
+    public function products() {
+        $boldApiService = app(BoldApiService::class);
+
+        $response = $boldApiService->getProducts('3311799300', '146219'); // 3311799300
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
+    public function upcomingOrders() {
         $boldApiService = app(BoldApiService::class);
 
         $shopifyCustomerId = env('shopify_customer_id'); //'3845586052'
@@ -45,10 +55,31 @@ class ApiController extends Controller
         ]);
     }
 
+    public function upcomingProducts() {
+        $boldApiService = app(BoldApiService::class);
+
+        $shopifyCustomerId = env('shopify_customer_id'); //'3845586052'
+        $response = $boldApiService->getUpcomingProducts('3311799300', '146219'); // 3311799300
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
     public function shippingRates() {
         $boldApiService = app(BoldApiService::class);
 
         $response = $boldApiService->getShippingRates('3311799300', '146219');
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
+    public function discounts() {
+        $boldApiService = app(BoldApiService::class);
+
+        $response = $boldApiService->getDiscounts('3311799300', '146219');
         return response()->json([
             'success' => true,
             'data' => $response
@@ -78,14 +109,27 @@ class ApiController extends Controller
     public function updateShippingMethod() {
         $boldApiService = app(BoldApiService::class);
         $shipping_rate_obj = [
-            "code" => "standard_free_shipping",
-            "name" => "Standar Free Shipping",
-            "price" => "0.00",
-            "source" => "Shopify",
+            // "bold_order_id" => $subscriptionId,
+            "code" => "Custom Standard Shipping (Delivers in 4-6 Business Days)",
+            "name" => "Custom Standard Shipping (Delivers in 4-6 Business Days)",
+            "price" => "500.01",
+            "source" => "shopify",
             "need_change" => 0,
-            "hash" => "hashValue"
+            "hash" => "5b046254c4f8e7be1775075deb50a69107ac0b16cbcf057b82de317deda42a468bfc5a6d45887c24142159f2a0093e47857c7b477857bdf4d6cc774c8ec866c5"
         ];
         $response = $boldApiService->updateShippingMethod('3311799300', '146219', $shipping_rate_obj); // original: 2036-07-16
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+
+    public function updateDiscountCode() {
+        $boldApiService = app(BoldApiService::class);
+        $code = 'FTRIAL2MTH';
+//        $code = 'FTRIAL2MTH-2';
+        $response = $boldApiService->deleteDiscountCode('3311799300', '146219', $code);
+//        $response = $boldApiService->updateDiscountCode('3311799300', '146219', $code);
         return response()->json([
             'success' => true,
             'data' => $response

@@ -19,12 +19,16 @@ use \App\Http\Controllers;
 //});
 Route::prefix('/')->group(function() {
     Route::get('/', [Controllers\ApiController::class, 'home']);
-    Route::get('/initialData', [Controllers\ApiController::class, 'index']);
-    Route::get('/orders', [Controllers\ApiController::class, 'orders']);
+//    Route::get('/initialData', [Controllers\ApiController::class, 'index']);
+    Route::get('/products', [Controllers\ApiController::class, 'products']);
+    Route::get('/getUpcomingOrders', [Controllers\ApiController::class, 'upcomingOrders']);
+    Route::get('/getUpcomingProducts', [Controllers\ApiController::class, 'upcomingProducts']);
     Route::get('/shippingRates', [Controllers\ApiController::class, 'shippingRates']);
+    Route::get('/discounts', [Controllers\ApiController::class, 'discounts']);
 //    Route::get('/subscriptions', [Controllers\ApiController::class, 'subscriptions']);
     Route::get('/updateNextShipDate', [Controllers\ApiController::class, 'updateNextShipDate']);
     Route::get('/updateOrderInterval', [Controllers\ApiController::class, 'updateOrderInterval']);
-//    Route::get('/updateShippingMethod', [Controllers\ApiController::class, 'updateShippingMethod']);
+    Route::get('/updateDiscountCode', [Controllers\ApiController::class, 'updateDiscountCode']);
+    Route::get('/updateShippingMethod', [Controllers\ApiController::class, 'updateShippingMethod']);
 });
 

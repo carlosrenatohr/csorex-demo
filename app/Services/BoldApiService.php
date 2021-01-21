@@ -120,6 +120,17 @@ class BoldApiService {
         return $result;
     }
 
+    public function getUpcomingProducts($shopify_customer_id, $order_id) {
+        try {
+            $res = $this->client->get("manage/subscription/orders/{$order_id}/upcoming_products?customer_id={$shopify_customer_id}&shop={$this->shopifyDomain}");
+            $result = json_decode($res->getBody(), true);
+        } catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
     /**
      * Get Shipping Rates for a given Subscription Order
      * @param $shopify_customer_id
@@ -129,6 +140,23 @@ class BoldApiService {
     public function getShippingRates($shopify_customer_id, $order_id) {
         try {
             $res = $this->client->get("manage/subscription/orders/{$order_id}/shipping_rates?customer_id={$shopify_customer_id}&shop={$this->shopifyDomain}");
+            $result = json_decode($res->getBody(), true);
+        } catch (ClientException $e) {
+            return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Discounts queue for a given Subscription Order
+     * @param $shopify_customer_id
+     * @param int $order_id
+     * @return bool|mixed
+     */
+    public function getDiscounts($shopify_customer_id, $order_id) {
+        try {
+            $res = $this->client->get("manage/subscription/orders/{$order_id}/discounts?customer_id={$shopify_customer_id}&shop={$this->shopifyDomain}");
             $result = json_decode($res->getBody(), true);
         } catch (ClientException $e) {
             return ['status' => $e->getResponse()->getStatusCode()];
@@ -191,13 +219,12 @@ class BoldApiService {
         return $result;
     }
 
-    /**
-     * Update order interval for a customer's subscription
+    /*
+     * Update shipping method of a given subscription
      *
      * @param $shopifyCustomerId
      * @param $subscriptionId
-     * @param $frequency_type
-     * @param $frequency_num
+     * @param $shipping_rate
      * @return bool|mixed
      */
     public function updateShippingMethod($shopifyCustomerId, $subscriptionId, $shipping_rate)
@@ -205,7 +232,7 @@ class BoldApiService {
         try {
             $res = $this->client->put('manage/subscription/orders/'. $subscriptionId.'/shipping_method?customer_id='.$shopifyCustomerId.'&shop='. $this->shopifyDomain, [
                 'json' => [
-                    'order_shipping_rate' => $shipping_rate,
+                    'order_shipping_rate' => $shipping_rate
                 ]
             ]);
 
@@ -213,6 +240,33 @@ class BoldApiService {
         }
         catch (ClientException $e) {
             return ['status' => $e->getResponse()->getStatusCode()];
+        }
+
+        return $result;
+    }
+
+    /*
+     * Update discount code of a given subscription
+     *
+     * @param $shopifyCustomerId
+     * @param $subscriptionId
+     * @param $coupon_code
+     * @return bool|mixed
+     */
+    public function updateDiscountCode($shopifyCustomerId, $subscriptionId, $coupon_code)
+    {
+        try {
+            $res = $this->client->post('manage/subscription/orders/'. $subscriptionId.'/discount?customer_id='.$shopifyCustomerId.'&shop='. $this->shopifyDomain, [
+                'json' => [
+                    'discount_code' => $coupon_code
+                ]
+            ]);
+
+            $result = json_decode($res->getBody(), true);
+            dd($result);
+        }
+        catch (ClientException $e) {
+            return ['status' => $e->getResponse()];
         }
 
         return $result;
