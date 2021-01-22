@@ -263,7 +263,6 @@ class BoldApiService {
             ]);
 
             $result = json_decode($res->getBody(), true);
-            dd($result);
         }
         catch (ClientException $e) {
             return ['status' => $e->getResponse()];

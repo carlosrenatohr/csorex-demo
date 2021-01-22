@@ -108,11 +108,10 @@ class ApiController extends Controller
 
     public function updateShippingMethod() {
         $boldApiService = app(BoldApiService::class);
-        $shipping_rate_obj = [
-            // "bold_order_id" => $subscriptionId,
+        $shipping_rate_obj = [ // it needs to be the exact hash obtained from the GET shipping ratesm, anyway it will not work
             "code" => "Custom Standard Shipping (Delivers in 4-6 Business Days)",
             "name" => "Custom Standard Shipping (Delivers in 4-6 Business Days)",
-            "price" => "500.01",
+            "price" => "300.00",
             "source" => "shopify",
             "need_change" => 0,
             "hash" => "5b046254c4f8e7be1775075deb50a69107ac0b16cbcf057b82de317deda42a468bfc5a6d45887c24142159f2a0093e47857c7b477857bdf4d6cc774c8ec866c5"
