@@ -60,8 +60,9 @@ class ApiController extends Controller
 
         $shopifyCustomerId = env('shopify_customer_id'); //'3845586052'
 //        $response = $boldApiService->getUpcomingProducts('3311799300', '146219'); // 3311799300
-        $response = $boldApiService->getUpcomingProducts('3108883268', '120416'); // 2-month TEST
+//        $response = $boldApiService->getUpcomingProducts('3108883268', '120416'); // 2-month TEST
 //        $response = $boldApiService->getUpcomingProducts('1048046534718', '2412455'); // 6-month TEST
+        $response = $boldApiService->getUpcomingProducts('3706299088958', '6826258'); // TIM TEEEST
 
 
         return response()->json([

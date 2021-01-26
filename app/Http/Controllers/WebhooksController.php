@@ -47,7 +47,7 @@ class WebhooksController extends Controller
             } else {
                 $product = $upcomingProds['data']['products'][0];
                 // Check if it's a 2-month program acquired, otherwise it will be skipped.
-                if ($product['product_title'] == "2-Month Program" || $product['id'] == 213027 || $product['sku'] == 'FGN-02M-510-02"') {
+                if ($product['product_title'] == "CSoreX 2-Month Program" || $product['id'] == 9772919 || $product['sku'] == 'FGN-02M-510-02') {
                     //
                     $new_props = ['subscription_id' => $props->data->subscription->id, 'customer_id' => $props->data->subscription->shopify_customer_id, 'first_name' => $props->data->subscription->first_name, 'last_name' => $props->data->subscription->last_name, 'email' => $props->data->subscription->customer_email, 'log_id' => $log->id, 'next_ship_date' => $props->data->subscription->next_ship_date, 'last_ship_date' => $props->data->subscription->last_ship_date, 'purchase_date' => $props->data->subscription->purchase_date,
 
@@ -96,7 +96,7 @@ class WebhooksController extends Controller
             } else {
                 $product = $upcomingProds['data']['products'][0];
                 // Check if it's a 2-month program acquired, otherwise it will be skipped.
-                if ($product['product_title'] == "2-Month Program" || $product['id'] == 213027 || $product['sku'] == 'FGN-02M-510-02"') {
+                if ($product['product_title'] == "CSoreX 2-Month Program" || $product['id'] == 9772919 || $product['sku'] == 'FGN-02M-510-02') {
                     //
                     $new_props = [
                         'subscription_id' => $subscription_id,
