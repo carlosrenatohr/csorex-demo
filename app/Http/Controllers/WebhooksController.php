@@ -30,31 +30,35 @@ class WebhooksController extends Controller
         ]);
         //
         $props = json_decode($payload);
-        $new_props = [
-            'subscription_id' => $props->data->subscription->id,
-            'customer_id' => $props->data->subscription->shopify_customer_id,
-            'first_name' => $props->data->subscription->first_name,
-            'last_name' => $props->data->subscription->last_name,
-            'email' => $props->data->subscription->customer_email,
-            'log_id' => $log->id,
-            'next_ship_date' => $props->data->subscription->next_ship_date,
-            'last_ship_date' => $props->data->subscription->last_ship_date,
-            'purchase_date' => $props->data->subscription->purchase_date,
 
-            'coupon' => '-',
-            'coupon_id' => $props->data->subscription->discount_code_id,
-            'interval_type' => $props->data->subscription->interval_type_id,
-            'interval_number' => $props->data->subscription->interval_number,
+        $boldApiService = app(BoldApiService::class);
+        $subscription_id = $props->data->subscription->id ?? '';
+        $customer_id = $props->data->subscription->shopify_customer_id ?? '';
+        if (empty($subscription_id) || empty($customer_id)) {
+            Logs::create([
+                'type' => 0,
+                'raw' => 'Internal error. There was not a customer id or subscription id attached on the Order created webhook response.'
+            ]);
+        } else {
+            $upcomingProds = $boldApiService->getUpcomingProducts($customer_id, $subscription_id);
+            Logs::find($log->id)->update(['upcomingProducts' => $upcomingProds]);
+            if ($upcomingProds['status'] != 200) {
+                Logs::create(['type' => 0, 'raw' => "Internal error. There was an issue requesting the upcomingOrders API to Bold on the Order created webhook; subscription_id:{$subscription_id}, customer_id: {$customer_id}"]);
+            } else {
+                $product = $upcomingProds['data']['products'][0];
+                // Check if it's a 2-month program acquired, otherwise it will be skipped.
+                if ($product['product_title'] == "2-Month Program" || $product['id'] == 213027 || $product['sku'] == 'FGN-02M-510-02"') {
+                    //
+                    $new_props = ['subscription_id' => $props->data->subscription->id, 'customer_id' => $props->data->subscription->shopify_customer_id, 'first_name' => $props->data->subscription->first_name, 'last_name' => $props->data->subscription->last_name, 'email' => $props->data->subscription->customer_email, 'log_id' => $log->id, 'next_ship_date' => $props->data->subscription->next_ship_date, 'last_ship_date' => $props->data->subscription->last_ship_date, 'purchase_date' => $props->data->subscription->purchase_date,
 
-            'subtotal' => $props->data->order->subtotal,
-            'total' => $props->data->order->total,
-            'tax' => $props->data->order->tax,
-            'shipping' => $props->data->order->shipping,
-            'transaction_date' => $props->data->order->transaction_date,
-            'event_time' => $props->event_time,
-        ];
+                        'coupon' => '-', 'coupon_id' => $props->data->subscription->discount_code_id, 'interval_type' => $props->data->subscription->interval_type_id, 'interval_number' => $props->data->subscription->interval_number,
 
-        $order = Order::create($new_props);
+                        'subtotal' => $props->data->order->subtotal, 'total' => $props->data->order->total, 'tax' => $props->data->order->tax, 'shipping' => $props->data->order->shipping, 'transaction_date' => $props->data->order->transaction_date, 'event_time' => $props->event_time,];
+
+                    $order = Order::create($new_props);
+                }
+            }
+        }
     }
 
     public function subscriptionCreated(Request $request) {
@@ -87,7 +91,7 @@ class WebhooksController extends Controller
             if ($upcomingProds['status'] != 200 ) {
                 Logs::create([
                     'type' => 0,
-                    'raw' => "Internal error. There was an issue requesting the upcomingOrders API to Bold; subscription_id:{$subscription_id}, customer_id: {$customer_id}"
+                    'raw' => "Internal error. There was an issue requesting the upcomingOrders API to Bold on the Subscription created webhook; subscription_id:{$subscription_id}, customer_id: {$customer_id}"
                 ]);
             } else {
                 $product = $upcomingProds['data']['products'][0];
