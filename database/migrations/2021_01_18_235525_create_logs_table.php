@@ -13,12 +13,12 @@ class CreateLogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('logs', function (Blueprint $table) {
-            $table->id();
-            $table->smallInteger('type')->comment('1:Subscription; 2:Order; 3: Customer');
-            $table->text('raw');
-            $table->timestamps();
-        });
+//        Schema::create('logs', function (Blueprint $table) {
+//            $table->id();
+//            $table->smallInteger('type')->comment('1:Subscription; 2:Order; 3: Customer');
+//            $table->text('raw');
+//            $table->timestamps();
+//        });
     }
 
     /**
@@ -28,6 +28,6 @@ class CreateLogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('logs');
+//        Schema::dropIfExists('logs');
     }
 }
