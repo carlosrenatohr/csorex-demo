@@ -9,5 +9,5 @@ class Logs extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'raw'];
+    protected $fillable = ['type', 'raw', 'upcomingProducts'];
 }

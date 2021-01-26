@@ -59,7 +59,11 @@ class ApiController extends Controller
         $boldApiService = app(BoldApiService::class);
 
         $shopifyCustomerId = env('shopify_customer_id'); //'3845586052'
-        $response = $boldApiService->getUpcomingProducts('3311799300', '146219'); // 3311799300
+//        $response = $boldApiService->getUpcomingProducts('3311799300', '146219'); // 3311799300
+        $response = $boldApiService->getUpcomingProducts('3108883268', '120416'); // 2-month TEST
+//        $response = $boldApiService->getUpcomingProducts('1048046534718', '2412455'); // 6-month TEST
+
+
         return response()->json([
             'success' => true,
             'data' => $response
@@ -125,10 +129,10 @@ class ApiController extends Controller
 
     public function updateDiscountCode() {
         $boldApiService = app(BoldApiService::class);
-        $code = 'FTRIAL2MTH';
-//        $code = 'FTRIAL2MTH-2';
-        $response = $boldApiService->deleteDiscountCode('3311799300', '146219', $code);
-//        $response = $boldApiService->updateDiscountCode('3311799300', '146219', $code);
+//        $code = 'FTRIAL2MTH';
+//        $code = 'FTRIAL2MTH-
+        $code = '';
+        $response = $boldApiService->updateDiscountCode('3311799300', '146219', $code);
         return response()->json([
             'success' => true,
             'data' => $response

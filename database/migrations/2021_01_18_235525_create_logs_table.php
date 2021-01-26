@@ -17,6 +17,7 @@ class CreateLogsTable extends Migration
 //            $table->id();
 //            $table->smallInteger('type')->comment('1:Subscription; 2:Order; 3: Customer');
 //            $table->text('raw');
+//            $table->text('upcomingProducts')->nullable();
 //            $table->timestamps();
 //        });
     }
