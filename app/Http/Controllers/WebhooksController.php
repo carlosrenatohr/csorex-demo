@@ -149,7 +149,7 @@ class WebhooksController extends Controller
                     ];
                     Subscription::create($new_props);
                     // -- Attach the discount code of Free Shipping
-                    $code = 'FTRIAL2MTH-21';
+                    $code = 'FTRIAL2MTH-21-0';
                     $coupon = $boldApiService->updateDiscountCode($customer_id, $subscription_id, $code);
                     // -- Update the interval subscription to send in the next 30 days
                     $next_shipping_date = date("Y-m-d", strtotime($event_time . ' + 30 days'));
